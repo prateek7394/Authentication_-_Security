@@ -56,6 +56,9 @@ app.get("/register", function(req,res){
     res.render("register");
 })
 app.get("/secrets", function(req,res){
+    // In this case secrets route is created so that if the user had previously logged in
+    // then he/she can directly access secrets page
+
     if(req.isAuthenticated()){
         res.render("secrets");
     }
@@ -73,16 +76,15 @@ app.get("/logout", function(req,res){
 
 app.post("/register", function(req,res){
 
-//  use method provided by passportpackage
+//  reqister method provided by passport package is used here
     User.register({username:req.body.username}, req.body.password, function(err,user){
         if(err){
             console.log(err);
             res.redirect("/register");
         }
         else{
+        //  authenticate the user
             passport.authenticate("local")(req, res , function(){
-        //  since the users are being authenticated and a login session is saved for them in the cookies,
-        //  therefore they are redirected to the secrets route if they were previously logged in
                 res.redirect("/secrets");
             });
         }
